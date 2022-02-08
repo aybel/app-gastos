@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import CerrarImg from '../img/cerrar.svg';
-import Swal from 'sweetalert2'
-const Modal = ({ setModal, animarModal, setAnimarModal }) => {
+import Swal from 'sweetalert2';
+import Mensaje from './Mensaje';
+
+const Modal = ({ setModal, animarModal, setAnimarModal, guardarGasto }) => {
 
     const [gasto, setGasto] = useState('');
     const [cantidad, setCantidad] = useState('');
     const [categoria, setCategoria] = useState('');
-    const [mensaje,setMensaje]=useState('')
+    const [mensaje, setMensaje] = useState('');
+
     const ocultarModal = () => {
         setModal(false);
         //reseteamos la animación del modal
@@ -18,14 +21,14 @@ const Modal = ({ setModal, animarModal, setAnimarModal }) => {
         e.preventDefault();
         //Validamos los campos
         if ([gasto, cantidad, categoria].includes('')) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validación',
-                text: 'Error, todos los campos son obligatorios, revise por favor el formulario',
-               
-            })
-            return
+            setMensaje("Los campos son obligatorios.");
+            setTimeout(() => {
+                setMensaje("");
+            }, 3000);
+            return;
         }
+
+        guardarGasto({ gasto, cantidad, categoria })
     }
     return (
         <div className="modal">
@@ -41,18 +44,19 @@ const Modal = ({ setModal, animarModal, setAnimarModal }) => {
                 className={`formulario ${animarModal ? "animar" : 'cerrar'}`}
             >
                 <legend>Nuevo antojo</legend>
+                {mensaje ? <Mensaje tipo="error">{mensaje}</Mensaje> : ""}
                 <div className='campo'>
-                    <label htmlFor="nombre">Nombre gasto</label>
+                    <label htmlFor="gasto">gasto gasto</label>
                     <input
-                        id="nombre"
+                        id="gasto"
                         type="text"
-                        placeholder='Agrega el nombre del gasto'
+                        placeholder='Agrega el gasto del gasto'
                         value={gasto}
                         onChange={e => setGasto(e.target.value)}
                     />
                 </div>
                 <div className='campo'>
-                    <label htmlFor="nombre">Cantidad del gasto</label>
+                    <label htmlFor="gasto">Cantidad del gasto</label>
                     <input
                         id="cantidad"
                         type="number"
@@ -62,7 +66,7 @@ const Modal = ({ setModal, animarModal, setAnimarModal }) => {
                     />
                 </div>
                 <div className='campo'>
-                    <label htmlFor="nombre">Categoría</label>
+                    <label htmlFor="gasto">Categoría</label>
                     <select
                         name=""
                         id="categoria"
@@ -70,12 +74,12 @@ const Modal = ({ setModal, animarModal, setAnimarModal }) => {
                         onChange={e => setCategoria(e.target.value)}
                     >
                         <option value="">-- Seleccione --</option>
-                        <option value="1">Ahorro</option>
-                        <option value="2">Comida</option>
-                        <option value="3">Casa</option>
-                        <option value="4">Gastos varios</option>
-                        <option value="5">Ocio</option>
-                        <option value="6">Suscripciones</option>
+                        <option value="0">Ahorro</option>
+                        <option value="1">Comida</option>
+                        <option value="2">Casa</option>
+                        <option value="3">Gastos varios</option>
+                        <option value="4">Ocio</option>
+                        <option value="5">Suscripciones</option>
                     </select>
                 </div>
                 <input type="submit" value="Agregar gasto" />
